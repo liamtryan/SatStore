@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { db } from "@/lib/firebase";
+import { db } from "../../lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function TestPage() {
@@ -20,16 +20,15 @@ export default function TestPage() {
     }
   };
 
-  const readLatest = async () => {
+  const readDocById = async () => {
     try {
       setStatus("Reading...");
-      // Replace with a known doc ID if desired; this just shows how to read one doc.
-      const ref = doc(db, "test", value);
+      const ref = doc(db, "test", value.trim());
       const snap = await getDoc(ref);
       if (snap.exists()) {
-        setStatus("Read doc " + ref.id + ": " + JSON.stringify(snap.data()));
+        setStatus("Read " + ref.id + ": " + JSON.stringify(snap.data()));
       } else {
-        setStatus("No such doc with ID: " + value);
+        setStatus("No doc with ID: " + value);
       }
     } catch (e: any) {
       setStatus("Error: " + (e?.message || String(e)));
@@ -43,12 +42,12 @@ export default function TestPage() {
       <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
         <button onClick={writeTest}>Write test doc</button>
         <input
-          placeholder="doc id to read"
+          placeholder="enter doc id to read"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           style={{ padding: 8 }}
         />
-        <button onClick={readLatest}>Read doc</button>
+        <button onClick={readDocById}>Read doc</button>
       </div>
       <p style={{ marginTop: 16 }}>
         After deploy, visit <code>/test</code> on your site to try this page.
